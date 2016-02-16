@@ -21,28 +21,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.fundacionjala.enforce.sonarqube.apex.checks;
+package org.fundacionjala.enforce.sonarqube.apex;
 
-import com.google.common.collect.ImmutableList;
-import java.util.List;
+import org.fundacionjala.enforce.sonarqube.apex.checks.CheckList;
+import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.squidbridge.annotations.AnnotationBasedRulesDefinition;
 
 /**
  *
  */
-public class CheckList {
+public class ApexRuleRepository implements RulesDefinition {
 
-    public static final String REPOSITORY_KEY = "apex";
+    private static final String REPOSITORY_NAME = "SonarQube";
 
-    public static final String SONAR_WAY_PROFILE = "Sonar way";
-
-    private CheckList() {
-    }
-
-    public static List<Class> getChecks() {
-        return ImmutableList.<Class>of(
-                CheckReturnTypeMethod.class,
-                ClassNameCheck.class,
-                LineLengthCheck.class,
-                MethodNameCheck.class);
+    @Override
+    public void define(Context context) {
+        NewRepository repository = context
+                .createRepository(CheckList.REPOSITORY_KEY, Apex.KEY)
+                .setName(REPOSITORY_NAME);
+        AnnotationBasedRulesDefinition.load(repository, Apex.KEY, CheckList.getChecks());
+        repository.done();
     }
 }

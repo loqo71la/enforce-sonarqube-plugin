@@ -32,7 +32,9 @@ import com.sonar.sslr.api.TokenType;
 public enum ApexTokenType implements TokenType {
 
     STRING,
-    NEW_LINE;
+    NEW_LINE,
+    DEDENT,
+    INDENT;
 
     @Override
     public String getName() {

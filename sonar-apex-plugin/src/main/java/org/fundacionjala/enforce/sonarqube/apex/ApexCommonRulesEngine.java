@@ -21,28 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.fundacionjala.enforce.sonarqube.apex.checks;
+package org.fundacionjala.enforce.sonarqube.apex;
 
-import com.google.common.collect.ImmutableList;
-import java.util.List;
+import org.sonar.squidbridge.commonrules.api.CommonRulesEngine;
+import org.sonar.squidbridge.commonrules.api.CommonRulesRepository;
 
 /**
  *
  */
-public class CheckList {
+public class ApexCommonRulesEngine extends CommonRulesEngine {
 
-    public static final String REPOSITORY_KEY = "apex";
+  public ApexCommonRulesEngine() {
+    super(Apex.KEY);
+  }
 
-    public static final String SONAR_WAY_PROFILE = "Sonar way";
-
-    private CheckList() {
-    }
-
-    public static List<Class> getChecks() {
-        return ImmutableList.<Class>of(
-                CheckReturnTypeMethod.class,
-                ClassNameCheck.class,
-                LineLengthCheck.class,
-                MethodNameCheck.class);
-    }
+  @Override
+  protected void doEnableRules(CommonRulesRepository repository) {
+    repository
+      .enableDuplicatedBlocksRule()
+      .enableInsufficientCommentDensityRule(null)
+      .enableInsufficientLineCoverageRule(null)
+      .enableInsufficientBranchCoverageRule(null);
+  }
+    
 }

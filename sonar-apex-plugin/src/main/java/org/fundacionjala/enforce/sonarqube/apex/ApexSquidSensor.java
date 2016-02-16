@@ -23,6 +23,7 @@
  */
 package org.fundacionjala.enforce.sonarqube.apex;
 
+import org.fundacionjala.enforce.sonarqube.apex.metrics.FileLinesVisitor;
 import com.google.common.collect.Lists;
 import com.sonar.sslr.api.Grammar;
 import java.util.Collection;
@@ -61,20 +62,26 @@ import org.sonar.squidbridge.indexer.QueryByType;
 public class ApexSquidSensor implements Sensor {
 
     private static final Number[] FUNCTIONS_DISTRIB_BOTTOM_LIMITS = {1, 2, 4, 6, 8, 10, 12, 20, 30};
+
     private static final Number[] FILES_DISTRIB_BOTTOM_LIMITS = {0, 5, 10, 20, 30, 60, 90};
 
     private final Checks<SquidAstVisitor<Grammar>> checks;
+
     private final FileLinesContextFactory fileLinesContextFactory;
 
     private SensorContext context;
+
     private AstScanner<Grammar> scanner;
+
     private FileSystem fileSystem;
+
     private ResourcePerspectives resourcePerspectives;
 
     public ApexSquidSensor(FileLinesContextFactory fileLinesContextFactory, FileSystem fileSystem, ResourcePerspectives perspectives, CheckFactory checkFactory) {
-        this.checks = checkFactory
-                .<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY)
-                .addAnnotatedChecks(CheckList.getChecks());
+        checks = checkFactory.<SquidAstVisitor<Grammar>>create(CheckList.REPOSITORY_KEY);
+        System.out.println("****** check: " + checks.toString() + " - " + CheckList.getChecks().size());
+        checks.addAnnotatedChecks(CheckList.getChecks());
+        System.out.println("****** check: " + checks.toString() + " - " + CheckList.getChecks().size());
         this.fileLinesContextFactory = fileLinesContextFactory;
         this.fileSystem = fileSystem;
         this.resourcePerspectives = perspectives;
@@ -91,6 +98,7 @@ public class ApexSquidSensor implements Sensor {
         this.context = context;
 
         List<SquidAstVisitor<Grammar>> visitors = Lists.newArrayList(checks.all());
+        visitors.add(new FileLinesVisitor(fileLinesContextFactory, fileSystem));
         this.scanner = ApexAstScanner.create(createConfiguration(), visitors.toArray(new SquidAstVisitor[visitors.size()]));
         FilePredicates p = fileSystem.predicates();
         scanner.scanFiles(Lists.newArrayList(fileSystem.files(p.and(p.hasType(InputFile.Type.MAIN), p.hasLanguage(Apex.KEY)))));

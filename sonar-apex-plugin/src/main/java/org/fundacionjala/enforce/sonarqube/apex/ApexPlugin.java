@@ -23,6 +23,7 @@
  */
 package org.fundacionjala.enforce.sonarqube.apex;
 
+import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.List;
 import org.fundacionjala.enforce.sonarqube.apex.cpd.ApexCpdMapping;
@@ -36,31 +37,27 @@ import org.sonar.api.resources.Qualifiers;
  */
 public class ApexPlugin extends SonarPlugin {
 
+    public static final String FILE_SUFFIXES_KEY = "sonar.apex.file.suffixes";
+
     @Override
     public List getExtensions() {
-        return Arrays.asList(
-                definitions(),
-                Apex.class,
-                ApexCpdMapping.class,
-                ApexProfile.class,
-                ApexMetrics.class,
-                ApexSquidSensor.class,
-                ApexWidget.class);
-    }
-
-    public static List<PropertyDefinition> definitions() {
-        return Arrays.asList(
-                PropertyDefinition.builder("org.sonar.fundacionjala.property")
-                .name("Property")
-                .description("Description of my property")
-                .defaultValue("Apex is here!!")
-                .build(),
-                PropertyDefinition.builder(Apex.FILE_SUFFIXES_KEY)
+        return ImmutableList.of(
+                PropertyDefinition.builder(FILE_SUFFIXES_KEY)
                 .name("File Suffixes")
-                .description("Apex :: Comma-separated list of suffixes for files to analyze.")
+                .description("Comma-separated list of suffixes of apex files to analyze.")
+                .category("apex")
                 .onQualifiers(Qualifiers.PROJECT)
                 .defaultValue("cls")
-                .build()
-        );
+                .build(),
+
+                Apex.class,
+                ApexCpdMapping.class,
+
+                ApexProfile.class,
+
+                ApexSquidSensor.class,
+                ApexRuleRepository.class,
+
+                ApexWidget.class);
     }
 }

@@ -26,6 +26,7 @@ package org.fundacionjala.enforce.sonarqube.apex;
 import com.google.common.collect.Lists;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
+import static org.fundacionjala.enforce.sonarqube.apex.ApexPlugin.FILE_SUFFIXES_KEY;
 import org.sonar.api.config.Settings;
 import org.sonar.api.resources.AbstractLanguage;
 
@@ -34,11 +35,12 @@ import org.sonar.api.resources.AbstractLanguage;
  */
 public class Apex extends AbstractLanguage {
 
-    public static final String FILE_SUFFIXES_KEY = "sonar.apex.file.suffixes";
     public static final String[] DEFAULT_FILE_SUFFIXES = {"cls"};
+
     public static final String NAME = "Apex";
-    public static final String KEY = "apex";
-    
+
+    public static final String KEY = "cls";
+
     private final Settings settings;
 
     public Apex(Settings settings) {
